@@ -145,10 +145,6 @@ function initTable(tableId,headstr,bodystr){
         dataJson:bodystr,
         tableid:'tabled',
         needsort:true,
-        columConfig:{
-            level:'lvl',
-            showname:'viewname'
-        },
         cssConfig:{
             table:' table-hover  table-striped table-bordered table-responsive',
             tr:''
