@@ -1,0 +1,33 @@
+/*展示表格格式*/
+#tabled {text-align:center;}
+#tabled caption{}
+#tabled th{padding:3px 3px 3px 3px;text-align:center; word-break: normal;cursor: pointer;vertical-align:middle;}
+#tabled td{padding:5px 35px 5px 35px;text-align:center;white-space:nowrap;}
+
+/*统计表格格式*/
+#tabledcnt {text-align:center; width:100%}
+#tabledcnt caption{}
+#tabledcnt th{padding:5px;text-align:center; word-break: normal;}
+#tabledcnt td{padding:5px 10px 5px 10px;text-align:center;white-space:nowrap;cursor:pointer;}
+
+.backtolist{float: right;cursor: pointer;}
+
+/*统计级别格式*/
+.lever1{background: #f2ff70;}
+.lever2{background: #ffac9f;}
+
+/*容器格式*/
+#containdiv {height:510px;overflow-x: auto;overFlow-y: auto ;}
+#containdivcnt {height:190px;overflow: auto;display: none;}
+
+/*表头描述的双层容器*/
+.descdivdefault_out{ height: auto !important;height:300px;min-height:300px;padding:10px;position:absolute;display:none}
+.descdivdefault_in { background:	#d8f8c5;height:100%;overflow:auto;width:300px; position:absolute;color:#3b3b3b;border-radius: 5px; filter:alpha(Opacity=60);-moz-opacity:0.95;opacity: 0.95;position:absolute}
+.descdivdefault_in .close{float:right;cursor:pointer; color:#fff;margin:0px;}
+.descdivdefault_in .content{padding:10px;text-indent:2em; line-height:1.5; padding-bottom:1em;font-size:12px;}
+.descdivdefault_in .ttitle{height:30px;background:#6fce37;color:#fff;line-height:30px;padding:0 10px;font-size:14px;}
+
+/*最大最小平均值比较图标格式*/
+.moreThanSpan { background : url("autoHimg/arrow/arrow1_05401.gif") no-repeat; width:13px; height:13px;display:inline-block;}
+.lessThanSpan { background: url("autoHimg/arrow/arrow1_05602.gif") no-repeat; width:13px; height:13px;display:inline-block;}
+.equalToSpan { background: url("autoHimg/arrow/arrow1_05303.gif") no-repeat; width:15px; height:13px;display:inline-block;}

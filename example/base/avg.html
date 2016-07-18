@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>基础展示应用-平均值/最大值/最小值/合计值</title>
+    <!-- HTML5 Shim 和 Respond.js 用于让 IE8 支持 HTML5元素和媒体查询 -->
+    <!--[if lt IE 9]>
+    <script src="../../h5lib/html5shiv.js"></script>
+    <script src="../../h5lib/respond.min.js"></script>
+    <![endif]-->
+    <link rel="stylesheet" type="text/css" href="../../src/css/bootstrap.css">
+    <link rel="stylesheet" type="text/css" href="../../src/css/ztree/zTreeStyle.css" >
+    <link rel="stylesheet" type="text/css" href="../../src/css/style.css">
+    <link rel="stylesheet" type="text/css" href="../../src/css/theme.bootstrap.css">
+
+</head>
+<body>
+<div class="container-fluid" id="refdiv">
+    <div class="col-xs-2 col-sm-2 col-md-2 ">
+        <div class="panel panel-primary">
+            <div class="panel-heading">
+                <h3 class="panel-title">结果中筛选</h3>
+            </div>
+            <div class="panel-body">
+                <div class="cont"> <ul id="treeDemo_org" class="ztree"></ul> </div>
+            </div>
+        </div>
+
+        <div class="panel panel-primary">
+            <div class="panel-heading">
+                <h3 class="panel-title">范例</h3>
+            </div>
+            <div class="panel-body" id="chooseType">
+                <p><a href="../exampleList.html" >返回范例列表</a></p>
+            </div>
+        </div>
+
+
+
+
+    </div>
+
+    <div class="col-xs-10 col-sm-10 col-md-10 ">
+        <div class="panel panel-primary"  id="listdiv">
+            <div class="panel-heading">
+                <h3 class="panel-title">基础展示应用-平均值/最大值/最小值/合计值</h3>
+            </div>
+            <div class="panel-body">
+
+                <div class="cont" >
+                    <ul class="list_main">
+                        <li><a  href="javascript:void(0)" onclick="showView()">点击进入平均值/最大值/最小值/合计值展示界面</a></li>
+                    </ul>
+                    <ul class="list_main">
+                        <li>使用说明:</li>
+                        <li>页面包含基础书写展示功能</li>
+                        <li>点击"平均值/最大值/最小值/合计值"对应的按钮可以进行对应值的展示</li>
+                        <li>平均值功能可以显示每个单元格数据与平均值的对比结果,结果以向上向下箭头图标展示,图标可自定义</li>
+                        <li>最大值/最小值功能可以显示单元格数据与最大值/最小值相同的结果,以向右箭头图标展示,图标可自定义</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="panel panel-primary" style="display:none" id="viewdiv">
+            <div class="panel-heading">
+                <h3 class="panel-title">平均值/最大值/最小值/合计值展示界面<span class="backtolist" id="backlist"> &lt; 返回前页</span></h3>
+            </div>
+            <div class="panel-body">
+                <div id="buttons" >
+                    <div class="btn-group" role="group" aria-label="...">
+                        <button type="button" class="btn btn-primary success" id="generator"  ><span class="glyphicon glyphicon-filter" aria-hidden="true"></span>&nbsp;筛选</button>
+                    </div>
+                    <div class="btn-group" role="group" aria-label="...">
+                        <button type="button" id="headerchoose" class="btn btn-success " ><span class="glyphicon glyphicon-tasks" aria-hidden="true"></span>&nbsp;选择表头</button>
+                    </div>
+
+                    <div class="btn-group" role="group" aria-label="...">
+                        <button type="button" class="btn btn-info" id="compare_avg">平均值</button>
+                        <button type="button" class="btn btn-info" id="compare_max">最大值</button>
+                        <button type="button" class="btn btn-info" id="compare_min">最小值</button>
+                        <button type="button" class="btn btn-info" id="compare_all">合计值</button>
+                    </div>
+                    <div class="btn-group" role="group" aria-label="...">
+                        <button type="button" class="btn btn-primary"  id="maxbt"><span class="glyphicon glyphicon-fullscreen" aria-hidden="true"></span>&nbsp;最大化</button>
+                    </div>
+
+                    <div class="panel panel-info" id="headtre" style="display:none;">
+                        <div class="panel-heading">
+                            <h3 class="panel-title">表头选择</h3>
+                        </div>
+                        <div class="panel-body">
+                            <div class="cont"> <ul id="header_tree" class="ztree"></ul> </div>
+                        </div>
+                    </div>
+                </div>
+                <span id="datev"></span>
+                <div id="containdivcnt">
+                    <table id="tabledcnt" >
+                    </table></div>
+                <div id="containdiv"><div id="tablepositonid"></div>
+                    <div id="analyzz">
+                        <br/>
+                        <div id="container" style="max-width:1000px;height:400px;display:none;"></div>
+                        <table id="tabled" >
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+
+
+</div>
+
+<div class="container-fluid" id="alldiv" style="display:none;">
+
+    <div style="padding-top: 40px;"><span id="dtiyp"></span></div>
+</div>
+
+
+<script src="../../src/js/jquery.min.js"></script>
+<script src="../../src/js/bootstrap.js"></script>
+<script src="../../src/js/jquery.autoHeader.all.js"></script>
+<script src="avg.js"></script>
+<script src="../../src/js/jquery.ztree.all-3.5.js"></script>
+
+</body>
+</html>
