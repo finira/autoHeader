@@ -1,0 +1,39 @@
+{
+    "name": "autoHeader",
+    "title": "AutoHeader",
+    "description": "一个用于生成多层复杂表头的jquery插件,可以进行表头和数据的动态生成,动态筛选以及一定的统计分析功能 --Generate table with complex and multi meter header，with some analytical approach",
+    "keywords": [
+        "complex",
+        "multi",
+        "meter",
+        "header",
+        "analysis"
+    ],
+    "version": "1.1.0",
+    "author": {
+        "name": "finira",
+        "email": "finira@qq.com",
+        "url": "https://github.com/finira"
+    },
+    "maintainers": [
+        {
+            "name": "finira",
+            "email": "finira@qq.com",
+            "url": "https://github.com/finira"
+        }
+    ],
+    "licenses": [
+        {
+            "type": "MIT",
+            "url": "https://github.com/jquery/jquery-color/blob/2.1.2/MIT-LICENSE.txt"
+        }
+    ],
+    "bugs": "https://github.com/finira/autoHeader/issues",
+    "homepage": "https://github.com/finira/autoHeader/",
+    "docs": "https://github.com/finira/autoHeader/",
+    "demo":"https://github.com/finira/autoHeader/",
+    "download": "https://github.com/finira/autoHeader/",
+    "dependencies": {
+        "jquery": ">=1.6"
+    }
+}
