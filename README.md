@@ -3,7 +3,7 @@
 
 ## 欢迎使用autoHeader插件
 
-打开example/exampleList.html即可查看示例列表。
+打开index.html即可查看示例列表。
 
 ----------
 
