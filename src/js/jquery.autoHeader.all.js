@@ -1,11 +1,13 @@
 /**
- * JQuery complex multi header auto write header and rowdata V1.1
+ * JQuery complex multi header auto write header and rowdata V1.1.1
  * 实现自动书写复杂树状表头以及表格数据的插件,并且具备一定的数据分析功能
  *
  * Copyright (c) 2016 Finira
  *
  * Licensed same as jquery - MIT License
  * http://www.opensource.org/licenses/mit-license.php
+ *
+ * V1.1.1 updated 2016-7-21 fix bugs and code issues
  *
  * V1.1 updated 2016-3-9
  *
@@ -15,12 +17,12 @@
 ;(function($,window,document,undefined) {
 
 	//记录各层级数据的三维数组
-	var headerList = new Array();
+	var headerList = [];
 	//记录叶子节点的数组
-	var leafList = new Array();
+	var leafList = [];
 
 	//统计分析的数组，用于记录横向预设值比对的统计数据
-	var anaList = new Array();
+	var anaList = [];
 
 	//书写数量统计的临时变量
 	var trcount=0;
@@ -153,7 +155,6 @@
 			this.options = $.extend(true,{}, this.defaults, opt);
 			//初始化jquery版本
 			this.initJqversion();
-
 	}
 
 	TheTable.prototype = {
@@ -178,7 +179,7 @@
 			var table = $("#" + this.options.tableid);
 			this.initTableHeader(table);
 			var dateheader=new Date();
-			this.initTableData(table);
+			this.initTableData();
 			var dateend=new Date();
 			var date3=dateend.getTime()-datestart.getTime();
 			var date4 = dateheader.getTime()-datestart.getTime();
@@ -212,24 +213,24 @@
 			//开启当前排名
 			generateRank(table);
 			//监控排序开始以及完成函数，生成当前排名
-			table.bind("sortEnd",function(e, t){
+			table.bind("sortEnd",function(){
 				//获取当前排序方式 赋值到sortconf变量中
 				sortconf.corder = $.tablesorter.getCurrentOrder();
 				//生成 title形式的排名
 				generateRank(table);
 				//根据序列号排序方式，刷新序列号
-				refreashBodyIndex(table,serial.serialColumnIndex,serial.type);
+				refreashBodyIndex(table,serial.serialColumnIndex);
 			});
 		},
 		/**
 		 * 初始化本地变量
 		 */
 		initVarible:function() {
-			headerList = new Array();
+			headerList = [];
 
-			leafList = new Array();
+			leafList = [];
 
-			anaList = new Array();
+			anaList = [];
 
 			trcount=0;
 
@@ -252,14 +253,14 @@
 		 * 初始化表格数据
 		 * @param table
 		 */
-		initTableData:function(table) {
-			this.writeTableData(table);
+		initTableData:function() {
+			this.writeTableData();
 		},
 		/**
 		 * 书写表格数据的方法
 		 * @param table
 		 */
-		writeTableData: function (table) {
+		writeTableData: function () {
 			if(leafList.length>0){
 				//如果配置信息里的数据是需要排序的话，那么这里的叶子节点数组也需要根据code进行排序
 				this.options.needsort && this.sortArray(leafList);
@@ -286,7 +287,7 @@
 				});
 				//如果是调试模式，tr根据数量配置进行对应的翻番
 				if(this.options.debug && this.options.datamulti>0){
-					trtmp = trall ;
+					var trtmp = trall ;
 					trcount = trcount * this.options.datamulti;
 					trall = Array(this.options.datamulti+1).join(trtmp);
 				}
@@ -297,13 +298,13 @@
 		/**
 		 * 生成表头对应的输入框
 		 */
-		initInputBody:function(table) {
+		/*initInputBody:function(table) {
 			var $this = this;
 			//循环leafList生成输入框
 			$.each(leafList, function (i, item) {
 
 			});
-		},
+		},*/
 
 		/**
 		 * 根据传入的table对象进行thead,tbody的书写,并且在thead上根据层数增加对应的tr行
@@ -418,7 +419,7 @@
 			if (headerList.length >= 0) {
 				var headtr = '';
 				for (var lever = 0; lever < this.options.laynum; lever++) {
-					array = headerList[lever];
+					var array = headerList[lever];
 					var headtd = '';
 					//如果需要排序，那就进行一次排序，按照treecode，即第一个元素进行升序排序
 					this.options.needsort && this.sortArray(array);
@@ -447,11 +448,12 @@
 		 */
 		isStartWith: function (regStr, compStr) {
 			if(regStr&&compStr){
-				if(regStr.indexOf(compStr)==0){
+				/*if(regStr.indexOf(compStr)==0){
 					return true;
 				}else{
 					return false;
-				}
+				}*/
+				return !regStr.indexOf(compStr);
 			}
 			return false;
 		},
@@ -474,7 +476,7 @@
 		 * @returns {Object}
 		 */
 		readObjDymValue: function (inObj, col) {
-			if (inObj != null && inObj != undefined && col != undefined&&col!='') {
+			if (inObj != null && inObj !== undefined && col !== undefined&&col!=='') {
 				return inObj[col];
 			}
 		},
@@ -538,27 +540,26 @@
 				if(desc){
 					//如果包含描述的表头th的class值被配置，那么这里就覆盖th原来的class
 					$this.options.descConfig.desc_th_class && $(this).prop($this.tablestr.class,$this.options.descConfig.desc_th_class);
+					var divin =  $('#'+$this.tablestr.prefix+$this.options.descConfig.css_in),
+						divout = $('#'+$this.tablestr.prefix+$this.options.descConfig.css_out);
 					//如果配置了目标div，那么divout和divin都是目标div，否则读取生成的div
 					if($this.options.descConfig.d_target_id){
-						var divin = $('#'+$this.options.descConfig.d_target_id),
-							divout = $('#'+$this.options.descConfig.d_target_id);
-					}else{
-						var divin =  $('#'+$this.tablestr.prefix+$this.options.descConfig.css_in),
-							divout = $('#'+$this.tablestr.prefix+$this.options.descConfig.css_out);
+						divin = $('#'+$this.options.descConfig.d_target_id);
+						divout = $('#'+$this.options.descConfig.d_target_id);
 					}
 					//绑定描述函数，如果是1.7以上的版本，用on绑定，不是则用bind绑定
 					if(morethan17) {
 						$(this).on($this.options.descConfig.showevent, function (e) {
 							$this.showDescDiv(divin, divout, $(this).html(), desc, e.pageX, e.pageY);
 						});
-						$(this).on($this.options.descConfig.hideevent, function (e) {
+						$(this).on($this.options.descConfig.hideevent, function () {
 							$this.hideDescDiv(divout);
 						});
 					}else{
 						$(this).bind($this.options.descConfig.showevent, function (e) {
 							$this.showDescDiv(divin, divout, $(this).html(), desc, e.pageX, e.pageY);
 						});
-						$(this).bind($this.options.descConfig.hideevent, function (e) {
+						$(this).bind($this.options.descConfig.hideevent, function () {
 							$this.hideDescDiv(divout);
 						});
 					}
@@ -575,16 +576,15 @@
 		 * @param pagey
 		 */
 		showDescDiv:function(divin,divout,titlestr,desc,pagex,pagey) {
-			var inhtml ='';
+			//默认的会加入关闭按钮以及标题栏
+			var span = this.tablestr.closespan.format(this.options.descConfig.css_close)+titlestr;
+			var title = this.formatElementStr(this.tablestr.div,[[this.tablestr.class,this.options.descConfig.css_title]],span);
+			var content = this.formatElementStr(this.tablestr.div,[[this.tablestr.class,this.options.descConfig.css_content]],desc);
+			var inhtml = title+content;
 			//如果指定了div，那么就简单的将标题加粗，并且换行
 			if(this.options.descConfig.d_target_id){
-				var title = this.formatElementStr(this.tablestr.border,[],titlestr+this.tablestr.split);
+				title = this.formatElementStr(this.tablestr.border,[],titlestr+this.tablestr.split);
 				inhtml = title+desc;
-			}else{//默认的会加入关闭按钮以及标题栏
-				var span = this.tablestr.closespan.format(this.options.descConfig.css_close)+titlestr;
-				var title = this.formatElementStr(this.tablestr.div,[[this.tablestr.class,this.options.descConfig.css_title]],span);
-				var content = this.formatElementStr(this.tablestr.div,[[this.tablestr.class,this.options.descConfig.css_content]],desc);
-				inhtml = title+content;
 			}
 			divin.html(inhtml);
 			//div显示位置，根据position来决定显示方式是漂浮还是固定
@@ -615,10 +615,10 @@
 	};
 
 	//临时表头和叶子节点数组
-	var tmpHeaderList = new Array();
-	var tmpLeafList = new Array();
+	var tmpHeaderList = [];
+	var tmpLeafList = [];
 	//临时选中的列名数组
-	var switchColumnsList = new Array();
+	var switchColumnsList = [];
 
 	/**
 	 * 数据分析模块 用于生成数据的平均值、最大值、最小值、合计值等列表以及数据比对功能
@@ -820,13 +820,13 @@
 		 */
 		bindCountTableCell:function(table) {
 			var $this = this;
-			table.find(this.tablestr.body).find(this.tablestr.td).each(function(i){
+			table.find(this.tablestr.body).find(this.tablestr.td).each(function(){
 				if(morethan17) {
-					$(this).on($this.options.transCountCp.switchevent, function (e) {
+					$(this).on($this.options.transCountCp.switchevent, function () {
 						$this.switchTableByCountCell($(this));
 					});
 				}else{
-					$(this).bind($this.options.transCountCp.switchevent, function (e) {
+					$(this).bind($this.options.transCountCp.switchevent, function () {
 						$this.switchTableByCountCell($(this));
 					});
 				}
@@ -860,7 +860,7 @@
 						theTableIns.initTableElement(tb);
 						theTableIns.writeHeader(tb, tmpHeaderList);
 						//获取行数据 即某一行的数据 根据单元格的pl[0]属性 即数据行位置 获取
-						var dataArray = new Array();
+						var dataArray = [];
 						dataArray.push(this.options.anaJson[pL[0]]);
 						//行数据的书写
 						this.overwriteTransValue(dataArray,tmpLeafList, false, false);
@@ -874,8 +874,7 @@
 		 * @param columnstr
 		 */
 		initTmpLeafFromTransColumns:function(columnstr) {
-			var $this = this;
-			tmpLeafList = new Array;
+			tmpLeafList = [];
 			$.each(leafList, function (li, lt) {
 				//leafList中，数据列类型被包含在columnstr中的节点将会被复制到tmpLeafList中。
 				if(lt[2]&&(columnstr.indexOf(lt[2]))>=0){
@@ -890,7 +889,7 @@
 		initTmpHeaderByTmpLeaf:function() {
 			if(tmpLeafList){
 				//遍历headerList第一重循环
-				tmpHeaderList = new Array;
+				tmpHeaderList = [];
 				for (var hindex = 0; hindex < headerList.length; hindex++) {
 					var tmpHeader = headerList[hindex];
 					var newHeader = [];
@@ -946,11 +945,9 @@
 			var returnCount ;
 			if(type&&anaListI){
 				$.each(anaListI, function (i_,item_) {
-					if(item_&&item_[0]&&item_[2]){
+					if(item_&&item_[0]&&item_[2]&&type==item_[0]){
 						//如果类型与数组0位置的类型相同，那么就返回2位置的数据数量
-						if(type==item_[0]){
-							returnCount = item_[2];
-						}
+						returnCount = item_[2];
 					}
 				});
 			}
@@ -963,9 +960,9 @@
 		 * @returns {Array}
 		 */
 		getAvgList :function() {
-			var returnList = new Array();
+			var returnList = [];
 			//临时list，二维list，用于记录数据的值，0放置数据的总和，1放置数据的个数
-			var tmpList = new Array();
+			var tmpList = [];
 			var $this = this;
 			if(this.options.baseJson && leafList.length>0){
 				returnList.length = leafList.length;
@@ -1021,7 +1018,7 @@
 		 * 生成总计list的方法
 		 */
 		getCountList:function() {
-			var returnList = new Array();
+			var returnList = [];
 			var $this = this;
 			if(this.options.baseJson && leafList.length>0){
 				returnList.length = leafList.length;
@@ -1066,8 +1063,8 @@
 		 */
 		getExtremeList:function() {
 			//根据tp进行最大最小符号的赋值和定义
-			var compchar =this.tablestr.extremeswitch [this.options.anatype] || false;
-			var returnList = new Array();
+			var compchar =this.tablestr.extremeswitch [this.options.anatype]||'';
+			var returnList = [];
 			var $this = this;
 			if(compchar && this.options.baseJson && leafList.length>0){
 				returnList.length = leafList.length;
@@ -1180,7 +1177,7 @@
 			var $this = this;
 			var trall = '';
 			//清空list
-			anaList = new Array();
+			anaList = [];
 			//循环anaJson，进行遍历
 			$.each(theJson, function (i, item) {
 				if(item) {
@@ -1236,22 +1233,21 @@
 						//单条条件的值，默认是以英文逗号（分隔符可以自定义）作为分割，前方是条件，后方是结果
 						var queryL = transItem.split($this.options.transcp.conditionDivide);
 						//如果条件和结果都不为空才进行比对操作
-						if(queryL[0]&&queryL[1]){
+						if(queryL[0]&&queryL[1]&&$this.matchExp(theValue,queryL[0],theJsonRow)){
 							//判断值是否符合条件，如果符合的话，那么就把class属性设置为预定好的class,并且跳出循环
-							if($this.matchExp(theValue,queryL[0],theJsonRow)){
-								//根据配置获取预设的css
-								var getcss = $this.options.transcp.clzConfig [queryL[1]]||'';
-								var theId = $this.tablestr.transIdPre+rownum+leafnum;
-								//加入id锚点便于定位
-								theCss = getcss? [[$this.tablestr.class, getcss],[$this.tablestr.id,theId]]:[];
-								//如果开启了信息统计，就封装统计信息到数组中 统计信息为左侧显示div和统计表格共用
-								//$this.options.transcp.count
-								transcount &&  $this.putTransToList(theValue,headerName,theId,queryL[1],anaList[rownum]);
-								//如果开启了信息统计的明细切换，就进行封装信息的初始化
-								//$this.options.transCountCp.switchenable
-								switchenable && $this.putFitColumnToRecord(rownum,queryL[1],dataColumn,queryL[0]);
-								return false;
-							}
+							//根据配置获取预设的css
+							var getcss = $this.options.transcp.clzConfig [queryL[1]]||'';
+							var theId = $this.tablestr.transIdPre+rownum+leafnum;
+							//加入id锚点便于定位
+							theCss = getcss? [[$this.tablestr.class, getcss],[$this.tablestr.id,theId]]:[];
+							//如果开启了信息统计，就封装统计信息到数组中 统计信息为左侧显示div和统计表格共用
+							//$this.options.transcp.count
+							transcount &&  $this.putTransToList(theValue,headerName,theId,queryL[1],anaList[rownum]);
+							//如果开启了信息统计的明细切换，就进行封装信息的初始化
+							//$this.options.transCountCp.switchenable
+							switchenable && $this.putFitColumnToRecord(rownum,queryL[1],dataColumn,queryL[0]);
+							return false;
+
 						}
 					}
 				});
@@ -1320,9 +1316,8 @@
 			try{
 				result = eval(exp_);
 			}catch (exception) {
-				console.log(exception);
+				//console.log(exception);
 			}
-			//console.log('exp is :' +exp_);
 			return result;
 		},
 		/**
@@ -1348,19 +1343,18 @@
 				var notContain = true;
 				$.each(anaObj, function (index_, obj_) {
 					//需要循环内容有值
-					if(obj_){
-						//统计类型标记放在类型内容数组的第一个位置,与入参类型比对是否相等，如若相等，就更新此数组内容
-						if(obj_[0]&&obj_[0]==theType){
-							//第三个位置放的是数据数量，数据数量加一
-							var cnt_ = Number(obj_[2]);
-							if(cnt_&&obj_[3]){
-								obj_[2] = cnt_+1;
-								//数据列表数组增加当前基础值数组
-								obj_[3].push(base_);
-								notContain = false;
-							}
+					//统计类型标记放在类型内容数组的第一个位置,与入参类型比对是否相等，如若相等，就更新此数组内容
+					if(obj_&&obj_[0]&&obj_[0]==theType){
+						//第三个位置放的是数据数量，数据数量加一
+						var cnt_ = Number(obj_[2]);
+						if(cnt_&&obj_[3]){
+							obj_[2] = cnt_+1;
+							//数据列表数组增加当前基础值数组
+							obj_[3].push(base_);
+							notContain = false;
 						}
 					}
+
 				});
 				//循环下来如果没有此类型的元素，即notContain仍然为true的话，那么就增加该类型
 				if(notContain){
@@ -1410,27 +1404,26 @@
 				var desc = readObjvalue($this.options.countJson,td.innerHTML)||'情况正常';
 					//$this.options.countJson.sc||'暂无';
 				if(desc){
+					var divin =  $('#'+$this.tablestr.divPrefix+$this.options.transcp.css_in),
+						divout = $('#'+$this.tablestr.divPrefix+$this.options.transcp.css_out);
 					//如果配置了目标div，那么divout和divin都是目标div，否则读取生成的div
 					if($this.options.transcp.d_target_id){
-						var divin = $('#'+$this.options.transcp.d_target_id),
-							divout = $('#'+$this.options.transcp.d_target_id);
-					}else{
-						var divin =  $('#'+$this.tablestr.divPrefix+$this.options.transcp.css_in),
-							divout = $('#'+$this.tablestr.divPrefix+$this.options.transcp.css_out);
+						divin = $('#'+$this.options.transcp.d_target_id);
+						divout = $('#'+$this.options.transcp.d_target_id);
 					}
 					//绑定描述函数，如果是1.7以上的版本，用on绑定，不是则用bind绑定
 					if(morethan17) {
 						$(this).on($this.options.transcp.showevent, function (e) {
 							$this.showDescDiv(divin, divout, $(this).html(), desc, e.pageX, e.pageY);
 						});
-						$(this).on($this.options.transcp.hideevent, function (e) {
+						$(this).on($this.options.transcp.hideevent, function () {
 							$this.hideDescDiv(divout);
 						});
 					}else{
 						$(this).bind($this.options.transcp.showevent, function (e) {
 							$this.showDescDiv(divin, divout, $(this).html(), desc, e.pageX, e.pageY);
 						});
-						$(this).bind($this.options.transcp.hideevent, function (e) {
+						$(this).bind($this.options.transcp.hideevent, function () {
 							$this.hideDescDiv(divout);
 						});
 					}
@@ -1448,16 +1441,15 @@
 		 * @param pagey
 		 */
 		showDescDiv:function(divin,divout,titlestr,desc,pagex,pagey) {
-			var inhtml ='';
+			//默认的会加入关闭按钮以及标题栏
+			var span = this.tablestr.closespan.format(this.options.transcp.css_close)+titlestr;
+			var title = this.formatElementStr(this.tablestr.div,[[this.tablestr.class,this.options.transcp.css_title]],span);
+			var content = this.formatElementStr(this.tablestr.div,[[this.tablestr.class,this.options.transcp.css_content]],desc);
+			var inhtml = title+content;
 			//如果指定了div，那么就简单的将标题加粗，并且换行
 			if(this.options.transcp.d_target_id){
-				var title = this.formatElementStr(this.tablestr.border,[],titlestr+this.tablestr.split);
+				title = this.formatElementStr(this.tablestr.border,[],titlestr+this.tablestr.split);
 				inhtml = title+desc;
-			}else{//默认的会加入关闭按钮以及标题栏
-				var span = this.tablestr.closespan.format(this.options.transcp.css_close)+titlestr;
-				var title = this.formatElementStr(this.tablestr.div,[[this.tablestr.class,this.options.transcp.css_title]],span);
-				var content = this.formatElementStr(this.tablestr.div,[[this.tablestr.class,this.options.transcp.css_content]],desc);
-				inhtml = title+content;
 			}
 			divin.html(inhtml);
 			//div显示位置，根据position来决定显示方式是漂浮还是固定
@@ -1671,7 +1663,7 @@
 			//处理数据类型的入参({0},{1} 指代 "name_",33)
 			else {
 				for (var i = 0; i < arguments.length; i++) {
-					if (arguments[i] != undefined) {
+					if (arguments[i] !== undefined) {
 						var reg = new RegExp("({[" + i + "]})", "g");
 						result = result.replace(reg, arguments[i]);
 					}
@@ -1679,7 +1671,7 @@
 			}
 		}
 		return result;
-	}
+	};
 
 	/**
 	 * 格式化元素内容方法 按照元素的名称类型，将元素的属性列表进行打包，按照入参的属性列表书写进入元素内容中（比如id class style等属性）
@@ -1761,12 +1753,9 @@
 	 * @param currentI
 	 */
 	function initSortIndexByInverse(currentI){
-		//只有当配置了反转排序
-		if(serial.type=='inverse'){
-			//当前排序类型与反转顺序相等则返回倒转的序号 - 数据总量减去当前循环号
-			if(serial.inverseOrder==sortconf.corder){
-				return trcount - currentI ;
-			}
+		//当前排序类型与反转顺序相等则返回倒转的序号 - 数据总量减去当前循环号
+		if(serial.type=='inverse'&&serial.inverseOrder==sortconf.corder){
+			return trcount - currentI ;
 		}
 		return currentI+1;
 	}
@@ -1834,11 +1823,7 @@
 	 */
 	function isStartWith(regStr, compStr) {
 		if(regStr&&compStr){
-			if(regStr.indexOf(compStr)==0){
-				return true;
-			}else{
-				return false;
-			}
+			return !regStr.indexOf(compStr);
 		}
 		return false;
 	}
@@ -1892,7 +1877,7 @@
 		 */
 		transCompare:function(options) {
 			var ana = new TheAnaLyze(options);
-			var anaReturn = ana.transCompare();
+			ana.transCompare();
 			return this;
 		}
 
