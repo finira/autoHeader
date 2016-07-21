@@ -5,6 +5,8 @@
 
 打开index.html即可查看示例列表。
 
+在线演示地址:http://finira.oschina.io/autoheader
+
 ----------
 
 **autoHeader**插件基于jquery开发，目前包含的功能有： 
