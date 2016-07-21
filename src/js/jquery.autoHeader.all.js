@@ -448,11 +448,6 @@
 		 */
 		isStartWith: function (regStr, compStr) {
 			if(regStr&&compStr){
-				/*if(regStr.indexOf(compStr)==0){
-					return true;
-				}else{
-					return false;
-				}*/
 				return !regStr.indexOf(compStr);
 			}
 			return false;
@@ -1609,11 +1604,7 @@
 		 */
 		isStartWith: function (regStr, compStr) {
 			if(regStr&&compStr){
-				if(regStr.indexOf(compStr)==0){
-					return true;
-				}else{
-					return false;
-				}
+				return !regStr.indexOf(compStr);
 			}
 			return false;
 		},
