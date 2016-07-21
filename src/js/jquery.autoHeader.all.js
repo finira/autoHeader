@@ -150,12 +150,12 @@
 				'closespan':'<span class="{0}"><b>&times;</b></span>',
 				'morethan17':true,
 				'debuginfo':'数据列数为{0}，数据量为{1}条，总共消耗时间为：{2}毫秒，表头生成消耗时间为{3}毫秒。'
-			},
+			};
 			//入参复制，因为入参为树状结构，使用深度拷贝
 			this.options = $.extend(true,{}, this.defaults, opt);
 			//初始化jquery版本
 			this.initJqversion();
-	}
+	};
 
 	TheTable.prototype = {
 
@@ -251,14 +251,12 @@
 		},
 		/**
 		 * 初始化表格数据
-		 * @param table
 		 */
 		initTableData:function() {
 			this.writeTableData();
 		},
 		/**
 		 * 书写表格数据的方法
-		 * @param table
 		 */
 		writeTableData: function () {
 			if(leafList.length>0){
@@ -275,13 +273,11 @@
 							var vlue =$this.readObjDymValue(item, leafList[idx][2])||'';
 							//拼装td字符串，并且加到tdall的变量中去
 							var opt = $this.options.cssConfig.td ? [[$this.tablestr.class,$this.options.cssConfig.td]] : [];
-							var tdstr = $this.formatElementStr($this.tablestr.td,opt,vlue);
-							tdall+=tdstr;
+							tdall += $this.formatElementStr($this.tablestr.td,opt,vlue);
 						}
 						//封装tr字符串，并且添加到trall的变量中
 						var optr = $this.options.cssConfig.datatr ? [[$this.tablestr.class,$this.options.cssConfig.datatr]] : [];
-						var trstr = $this.formatElementStr($this.tablestr.tr,optr,tdall);
-						trall+=trstr;
+						trall += $this.formatElementStr($this.tablestr.tr,optr,tdall);
 						trcount++;
 					}
 				});
@@ -401,19 +397,20 @@
 		/**
 		 * 读取下属叶子节点数量的方法 到叶子节点列表中去遍历
 		 * @param treecode
+		 * @param leafList
 		 * @returns {number}
 		 */
 		readLeafCount: function (treecode,leafList) {
-			var rCount = 0,
-				$this = this;
+			var rCount = 0;
 			$.each(leafList, function (leaf, lea) {
-				$this.isStartWith(lea[0], treecode) && rCount++;
+				isStartWith(lea[0], treecode) && rCount++;
 			});
 			return rCount;
 		},
 		/**
 		 * 书写表头的方法
 		 * @param table
+		 * @param headerList
 		 */
 		writeHeader: function (table,headerList) {
 			if (headerList.length >= 0) {
@@ -426,31 +423,17 @@
 					//开始书写th
 					for (var al = 0; al < array.length; al++) {
 						//打包td信息
-						var td = array[al][1];
-						headtd+=td;
+						headtd+= array[al][1];
 					}
 					//根据打包的td信息生成tr信息并且一起打包到headtr
 					var optr = this.options.cssConfig.tr ? [[this.tablestr.class, this.options.cssConfig.tr]]:[];
-					var trstr = this.formatElementStr(this.tablestr.tr, optr,headtd);
-					headtr+=trstr;
+					headtr+=  this.formatElementStr(this.tablestr.tr, optr,headtd);
 				}
 				//书写组装完毕的表头信息  使用id查找，提高查找效率
 				$('#'+this.tablestr.prefix+this.tablestr.head).append(headtr);
 				//防止之前是隐藏状态，在这里进行一次显示
 				table.show();
 			}
-		},
-		/**
-		 * 判断regStr是否以compStr开头的方法
-		 * @param regStr
-		 * @param compStr
-		 * @returns {boolean}
-		 */
-		isStartWith: function (regStr, compStr) {
-			if(regStr&&compStr){
-				return !regStr.indexOf(compStr);
-			}
-			return false;
 		},
 		/**
 		 * 列表的排序方法,支持字符串排序 比如ABC 目前以第一个元素([0])，即treecode编号进行升序排序
@@ -479,6 +462,7 @@
 		 * 格式化元素内容方法 按照元素的名称类型，将元素的属性列表进行打包，按照入参的属性列表书写进入元素内容中（比如id class style等属性）
 		 * @param elmtname
 		 * @param propList
+		 * @param innerHtm
 		 * @returns {*}
 		 */
 		formatElementStr: function (elmtname, propList, innerHtm) {
@@ -539,8 +523,9 @@
 						divout = $('#'+$this.tablestr.prefix+$this.options.descConfig.css_out);
 					//如果配置了目标div，那么divout和divin都是目标div，否则读取生成的div
 					if($this.options.descConfig.d_target_id){
-						divin = $('#'+$this.options.descConfig.d_target_id);
-						divout = $('#'+$this.options.descConfig.d_target_id);
+						var divtgt = $('#'+$this.options.descConfig.d_target_id);
+						divin = divtgt;
+						divout  = divtgt;
 					}
 					//绑定描述函数，如果是1.7以上的版本，用on绑定，不是则用bind绑定
 					if(morethan17) {
@@ -679,7 +664,7 @@
 				'hideevent':'',//关闭描述的事件
 				'position':'fly',//div显示位置 有absolute和fly两种状态 absolute：div的位置是绝对值，以x和y作为起点。fly：div的位置以鼠标作为起点，x和y为偏移量
 				'pos_x':-100,//x位置
-				'pos_y':0,//y位置
+				'pos_y':0//y位置
 			},
 			//预设值比对的统计表格设置，V1.1版本新增
 			this.transCountCp ={
@@ -733,7 +718,7 @@
 			}
 
 
-	}
+	};
 
 	TheAnaLyze.prototype = {
 
@@ -951,7 +936,6 @@
 
 		/**
 		 * 获取平均值
-		 * @param bodyjson
 		 * @returns {Array}
 		 */
 		getAvgList :function() {
@@ -999,8 +983,7 @@
 				//取list对应index的值，如果list在index处的值为undefined，那么就将该值赋值给该位置的0号位置，1号位置放置数量
 				var listval = List_[index_];
 				if(!listval){
-					var initL = [vlu,1];
-					List_[index_] = initL;
+					List_[index_] = [vlu,1];
 				}else{
 					var listvalue = Number(listval[0]);
 					var listcount = Number(listval[1])+1;
@@ -1053,8 +1036,6 @@
 		},
 		/**
 		 * 获取极端值列表 最大 最小值
-		 * @param bodyjson
-		 * @param tp
 		 */
 		getExtremeList:function() {
 			//根据tp进行最大最小符号的赋值和定义
@@ -1081,6 +1062,8 @@
 		 * 生成极限值list值
 		 * @param value_
 		 * @param index_
+		 * @param List_
+		 * @param compchar
 		 */
 		initExtremeListValue:function(value_,index_,List_,compchar) {
 			if(value_ && !isNaN(value_)){
@@ -1105,8 +1088,7 @@
 			//如果抬头描述开启（默认开启）
 			if(this.options.descenable){
 				//获取描述值，如果入参有，就按入参的来，没有的话就取默认值
-				var descstr = this.options.descstr ? this.options.descstr :this.tablestr.descswitch [this.options.anatype]||'';
-				List[this.options.desccol] = descstr;
+				List[this.options.desccol] = this.options.descstr ? this.options.descstr :this.tablestr.descswitch [this.options.anatype]||'';
 			}
 		},
 		/**
@@ -1165,6 +1147,7 @@
 		/**
 		 * 与设定值比对的方法，如果符合设定时书写的公式，那么就将css置为设定的css，例如标红、标黄等设置
 		 * @param theJson 需要书写的数据
+		 * @param leafList 叶子数组
 		 * @param transcount 是否开启信息统计
 		 * @param switchenable 是否开启信息统计的明细切换
 		 */
@@ -1189,18 +1172,15 @@
 						//如果第三个值不为空，那么td的css就按照比对的css来取
 						opt =  $this.anaLyzTrans (leafList[idx][3],leafList[idx][1],opt,vlue,item,i,idx,leafList[idx][2],transcount,switchenable);
 						//拼装td字符串，并且加到tdall的变量中去
-						var tdstr = $this.formatElementStr($this.tablestr.td, opt, vlue);
-						tdall += tdstr;
+						tdall += $this.formatElementStr($this.tablestr.td, opt, vlue);
 					}
 					//封装tr字符串，并且添加到trall的变量中
 					var optr = $this.options.cssConfig.datatr ? [[$this.tablestr.class, $this.options.cssConfig.datatr]] : [];
-					var trstr = $this.formatElementStr($this.tablestr.tr, optr, tdall);
-					trall += trstr;
+					trall += $this.formatElementStr($this.tablestr.tr, optr, tdall);
 				}
 			});
 			//先清空table的tbody，然后书写
-			$('#'+this.options.tableid).find(this.tablestr.body).html('');
-			$('#'+this.options.tableid).find(this.tablestr.body).append(trall);
+			$('#'+this.options.tableid).find(this.tablestr.body).html('').append(trall);
 		},
 
 		/**
@@ -1403,8 +1383,9 @@
 						divout = $('#'+$this.tablestr.divPrefix+$this.options.transcp.css_out);
 					//如果配置了目标div，那么divout和divin都是目标div，否则读取生成的div
 					if($this.options.transcp.d_target_id){
-						divin = $('#'+$this.options.transcp.d_target_id);
-						divout = $('#'+$this.options.transcp.d_target_id);
+						var divtgt = $('#'+$this.options.transcp.d_target_id);
+						divin = divtgt;
+						divout = divtgt;
 					}
 					//绑定描述函数，如果是1.7以上的版本，用on绑定，不是则用bind绑定
 					if(morethan17) {
@@ -1502,18 +1483,15 @@
 
 							//拼装td字符串，并且加到tdall的变量中去
 							var opt = $this.options.cssConfig.td ? [[$this.tablestr.class, $this.options.cssConfig.td]] : [];
-							var tdstr = $this.formatElementStr($this.tablestr.td, opt, vlue);
-							tdall += tdstr;
+							tdall += $this.formatElementStr($this.tablestr.td, opt, vlue);
 						}
 						//封装tr字符串，并且添加到trall的变量中
 						var optr = $this.options.cssConfig.datatr ? [[$this.tablestr.class, $this.options.cssConfig.datatr]] : [];
-						var trstr = $this.formatElementStr($this.tablestr.tr, optr, tdall);
-						trall += trstr;
+						trall +=  $this.formatElementStr($this.tablestr.tr, optr, tdall);
 					}
 				});
 				//先清空table的tbody，然后书写
-				$('#'+this.options.tableid).find(this.tablestr.body).html('');
-				$('#'+this.options.tableid).find(this.tablestr.body).append(trall);
+				$('#'+this.options.tableid).find(this.tablestr.body).html('').append(trall);
 			}
 		},
 		/**
@@ -1545,10 +1523,10 @@
 		 * @returns {*|string}
 		 */
 		getCompareClassConfig:function() {
-			var configObj = {'max':{'eq':this.options.compare.eqclass},
+			return {'max':{'eq':this.options.compare.eqclass},
 				'min':{'eq':this.options.compare.eqclass},
 				'avg':{'up':this.options.compare.upclass,'down':this.options.compare.lowclass,'eq':this.options.compare.eqclass}}[this.options.anatype]||''
-			return configObj;
+
 		},
 		/**
 		 * 查询各类list 通过anatype进行判断list类型
@@ -1590,28 +1568,18 @@
 					:[[$this.tablestr.id,$this.tablestr.prefix+$this.options.anatype]];
 				var trstr = $this.formatElementStr($this.tablestr.tr, trop, tdstr);
 				//书写tr 判断是before还是after ，进行不同的书写
+				var table = $('#'+this.options.tableid);
 				pos=='after' &&
-					$('#'+this.options.tableid).find(this.tablestr.body).find(this.tablestr.tr).last().after(trstr);
+					table.find(this.tablestr.body).find(this.tablestr.tr).last().after(trstr);
 				pos=='before' &&
-				 	$('#'+this.options.tableid).find(this.tablestr.body).find(this.tablestr.tr).eq(0).before(trstr);
+					table.find(this.tablestr.body).find(this.tablestr.tr).eq(0).before(trstr);
 			}
-		},
-		/**
-		 * 判断regStr是否以compStr开头的方法
-		 * @param regStr
-		 * @param compStr
-		 * @returns {boolean}
-		 */
-		isStartWith: function (regStr, compStr) {
-			if(regStr&&compStr){
-				return !regStr.indexOf(compStr);
-			}
-			return false;
 		},
 		/**
 		 * 格式化元素内容方法 按照元素的名称类型，将元素的属性列表进行打包，按照入参的属性列表书写进入元素内容中（比如id class style等属性）
 		 * @param elmtname
 		 * @param propList
+		 * @param innerHtm
 		 * @returns {*}
 		 */
 		formatElementStr: function (elmtname, propList, innerHtm) {
